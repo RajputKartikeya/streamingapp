@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,10 +33,26 @@ public class VideoController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Video> getVideoById(@PathVariable Long id) {
-        Optional<Video> video = videoService.getVideoById(id);
-        return video.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getVideoById(@PathVariable Long id) {
+        Optional<Video> videoOptional = videoService.getVideoById(id);
+        if (videoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Video video = videoOptional.get();
+        Map<String, Object> response = new HashMap<>();
+        response.put("video", video);
+        
+        Map<String, String> availableQualities = new HashMap<>();
+        availableQualities.put("original", "/api/videos/" + id + "/stream");
+        if (video.getFilePath720p() != null) {
+            availableQualities.put("720p", "/api/videos/" + id + "/stream?quality=720p");
+        }
+        if (video.getFilePath1080p() != null) {
+            availableQualities.put("1080p", "/api/videos/" + id + "/stream?quality=1080p");
+        }
+        response.put("availableQualities", availableQualities);
+        
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/upload")
@@ -46,30 +64,41 @@ public class VideoController {
             return ResponseEntity.ok(video);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore interruption status
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Error uploading file: " + e.getMessage());
+                                .body("Error uploading or transcoding file: " + e.getMessage());
         }
     }
     
     @GetMapping("/{id}/stream")
-    public ResponseEntity<Resource> streamVideo(@PathVariable Long id) {
-        File videoFile = videoService.getVideoFile(id);
+    public ResponseEntity<Resource> streamVideo(
+            @PathVariable Long id,
+            @RequestParam(required = false) String quality) {
+        File videoFile = videoService.getVideoFile(id, quality);
         
         if (videoFile == null || !videoFile.exists()) {
             return ResponseEntity.notFound().build();
         }
         
         Optional<Video> videoOpt = videoService.getVideoById(id);
-        if (!videoOpt.isPresent()) {
+        if (videoOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         
         Video video = videoOpt.get();
         Resource resource = new FileSystemResource(videoFile);
         
+        String contentType = video.getContentType();
+        // Determine content type based on the actual file being served if it's a transcoded version
+        // This is a simplified assumption; a more robust way would be to store content type per version
+        // or use a library to detect it from the file.
+        if (quality != null && (video.getFilePath720p() != null || video.getFilePath1080p() != null)){
+             contentType = "video/mp4"; // Assuming transcoded versions are mp4
+        }
+        
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(video.getContentType()))
+                .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + video.getFileName() + "\"")
                 .body(resource);
     }

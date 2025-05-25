@@ -1,6 +1,6 @@
 # Video Streaming Web App
 
-A minimal yet functional video streaming application built with Spring Boot (backend) and React (frontend). Perfect for portfolio/resume projects.
+A modern video streaming application built with Spring Boot (backend) and React (frontend), featuring a beautiful glass-morphism UI design.
 
 ## Features
 
@@ -13,11 +13,13 @@ A minimal yet functional video streaming application built with Spring Boot (bac
   - CORS configured for frontend
 
 - **Frontend (React 18 + TypeScript)**
-  - Modern admin dashboard for video management
+  - Modern admin dashboard with glass-morphism UI
   - Video upload interface with drag & drop
-  - Video listing and playback
+  - Video listing and playback with quality selection
   - Responsive design with Tailwind CSS
   - shadcn/ui components for beautiful UI
+  - Glass-morphism effects for enhanced visual appeal
+  - Video quality switching during playback
 
 ## Technology Stack
 
@@ -25,6 +27,7 @@ A minimal yet functional video streaming application built with Spring Boot (bac
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Lucide Icons
 - **API Communication**: Axios
 - **Deployment**: Heroku-ready
+- **UI Design**: Glass-morphism, Modern Minimalist
 
 ## Project Structure
 
@@ -129,7 +132,7 @@ This will automatically start both backend and frontend services.
 1. Create a Heroku app:
 
    ```bash
-   heroku create your-app-name
+   heroku create streaming-app
    ```
 
 2. Set buildpacks:
@@ -173,11 +176,12 @@ npm run build
 
 The application features:
 
-- Clean, modern dashboard interface
+- Clean, modern dashboard interface with glass-morphism effects
 - Drag & drop video upload
 - Grid-based video library
-- Modal video player with controls
+- Modal video player with quality selection
 - Responsive design for all screen sizes
+- Beautiful translucent UI elements
 
 ## Future Enhancements
 
@@ -198,7 +202,3 @@ The application features:
 3. Make your changes
 4. Test thoroughly
 5. Submit a pull request
-
-## License
-
-MIT License - feel free to use this project for your portfolio or learning purposes.

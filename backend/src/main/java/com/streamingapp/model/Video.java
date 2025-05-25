@@ -29,6 +29,12 @@ public class Video {
     @Column(nullable = false)
     private LocalDateTime uploadTime;
     
+    @Column(nullable = true) // Nullable as they are generated post-upload
+    private String filePath720p;
+    
+    @Column(nullable = true) // Nullable as they are generated post-upload
+    private String filePath1080p;
+    
     // Constructors
     public Video() {
         this.uploadTime = LocalDateTime.now();
@@ -98,5 +104,21 @@ public class Video {
     
     public void setUploadTime(LocalDateTime uploadTime) {
         this.uploadTime = uploadTime;
+    }
+    
+    public String getFilePath720p() {
+        return filePath720p;
+    }
+    
+    public void setFilePath720p(String filePath720p) {
+        this.filePath720p = filePath720p;
+    }
+    
+    public String getFilePath1080p() {
+        return filePath1080p;
+    }
+    
+    public void setFilePath1080p(String filePath1080p) {
+        this.filePath1080p = filePath1080p;
     }
 } 

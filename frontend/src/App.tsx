@@ -4,12 +4,15 @@ import { VideoList } from "./components/VideoList";
 import { VideoPlayer } from "./components/VideoPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Video, Loader2, AlertCircle } from "lucide-react";
-import type { Video as VideoType } from "./services/api";
+import type { VideoMetadata } from "./services/api";
 import { apiService } from "./services/api";
+import { Button } from "./components/ui/button";
 
 function App() {
-  const [videos, setVideos] = useState<VideoType[]>([]);
-  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
+  const [videos, setVideos] = useState<VideoMetadata[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoMetadata | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +40,7 @@ function App() {
     fetchVideos();
   };
 
-  const handleVideoSelect = (video: VideoType) => {
+  const handleVideoSelect = (video: VideoMetadata) => {
     setSelectedVideo(video);
   };
 
@@ -64,14 +67,15 @@ function App() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <Card className="mb-8">
+        <Card className="mb-8 shadow-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-3xl">
-              <Video className="w-8 h-8" />
+            <CardTitle className="flex items-center gap-3 text-3xl font-semibold">
+              <Video className="w-8 h-8 text-primary" />
               Video Streaming Dashboard
             </CardTitle>
             <p className="text-muted-foreground">
-              Upload, manage, and stream your video content
+              Upload, manage, and stream your video content with multiple
+              quality options.
             </p>
           </CardHeader>
         </Card>
@@ -88,26 +92,27 @@ function App() {
             {loading ? (
               <Card>
                 <CardContent className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin mr-2" />
+                  <Loader2 className="w-8 h-8 animate-spin mr-2 text-primary" />
                   Loading videos...
                 </CardContent>
               </Card>
             ) : error ? (
-              <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      Error Loading Videos
-                    </h3>
-                    <p className="text-muted-foreground mb-4">{error}</p>
-                    <button
-                      onClick={fetchVideos}
-                      className="text-primary hover:underline"
-                    >
-                      Try Again
-                    </button>
-                  </div>
+              <Card className="border-destructive">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-destructive-foreground">
+                    Error Loading Videos
+                  </h3>
+                  <p className="text-muted-foreground mb-4 text-center">
+                    {error}
+                  </p>
+                  <Button
+                    onClick={fetchVideos}
+                    variant="destructive"
+                    className="mt-2"
+                  >
+                    Try Again
+                  </Button>
                 </CardContent>
               </Card>
             ) : (
@@ -121,7 +126,9 @@ function App() {
         </div>
 
         {/* Video Player Modal */}
-        <VideoPlayer video={selectedVideo} onClose={handlePlayerClose} />
+        {selectedVideo && (
+          <VideoPlayer video={selectedVideo} onClose={handlePlayerClose} />
+        )}
       </div>
     </div>
   );

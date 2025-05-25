@@ -8,11 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Play, Trash2, Calendar, FileVideo } from "lucide-react";
-import type { Video } from "@/services/api";
+import type { VideoMetadata } from "@/services/api";
 
 interface VideoListProps {
-  videos: Video[];
-  onVideoSelect: (video: Video) => void;
+  videos: VideoMetadata[];
+  onVideoSelect: (video: VideoMetadata) => void;
   onVideoDelete: (id: number) => void;
 }
 
