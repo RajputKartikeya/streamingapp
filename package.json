@@ -1,0 +1,27 @@
+{
+  "name": "video-streaming-app",
+  "version": "1.0.0",
+  "description": "A video streaming web application with Spring Boot backend and React frontend",
+  "scripts": {
+    "install-backend": "cd backend && ./mvnw clean install -DskipTests",
+    "install-frontend": "cd frontend && npm install",
+    "build-frontend": "cd frontend && npm run build",
+    "start-backend": "cd backend && ./mvnw spring-boot:run",
+    "start-frontend": "cd frontend && npm run dev",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
+  },
+  "keywords": [
+    "video",
+    "streaming",
+    "spring-boot",
+    "react",
+    "typescript",
+    "tailwind"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}
